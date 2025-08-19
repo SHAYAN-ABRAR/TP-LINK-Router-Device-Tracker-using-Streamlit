@@ -166,7 +166,8 @@ def retrieve_dhcp_clients(session, token, router_url):
     try:
         response = session.get(status_url, headers=headers, timeout=10)
         return response.text
-    except requests.exceptions.RequestException:
+    except requests.exceptions.RequestException as e:
+        # Added indented block to handle the exception
         return None
 
 def retrieve_wireless_clients_html(session, token, router_url, page=1, vap_idx=0):
@@ -225,7 +226,7 @@ def get_connected_devices_and_status(session, token, router_url):
                 field_count = 5
                 html_devices = [elements[i:i+field_count] for i in range(0, len(elements), field_count) if len(elements[i:i+field_count]) == field_count]
                 wireless_macs = {device[0].lower() for device in html_devices}
-        except Exception:
+        except Exception as e:
             pass
 
     # Fetch and parse DHCP clients
@@ -238,10 +239,10 @@ def get_connected_devices_and_status(session, token, router_url):
                 elements = re.findall(r'"([^"]*)"', array_str)
                 field_count = 4
                 dhcp_devices = [elements[i:i+field_count] for i in range(0, len(elements), field_count) if len(elements[i:i+field_count]) == field_count]
-                
+                # Include all DHCP devices without strict wireless MAC filtering
                 devices = [
                     {"NAME": dev[0], "MAC ADDRESS": dev[1], "IP ADDRESS": dev[2], "LEASE TIME": dev[3]}
-                    for dev in dhcp_devices if not wireless_macs or dev[1].lower() in wireless_macs
+                    for dev in dhcp_devices
                 ]
         except Exception:
             pass
