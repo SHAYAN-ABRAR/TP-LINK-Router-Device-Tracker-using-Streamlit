@@ -418,3 +418,5 @@ if 'connect' in st.session_state and st.session_state['connect']:
             st.error("Failed to connect to the router. Please verify the URL and credentials.")
 else:
     st.info("Enter router details in the sidebar and click 'Connect to Router' to view the dashboard.")
+
+# streamlit run "TP-LINK Test using Streamlit.py"
